@@ -14,6 +14,14 @@ jobs:
       - name: Unpack the project
         run: unzip -q ./*.zip
 
+      - name: Prepare page
+        run: |
+          f=gallery-app/app/src/main/assets/index.html
+          if ! grep -qi '<!doctype' "$f"; then
+            { printf '%s' '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>html,body{margin:0}body{font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>'; cat "$f"; printf '%s' '</body></html>'; } > page.tmp
+            mv page.tmp "$f"
+          fi
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
